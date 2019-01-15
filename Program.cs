@@ -214,6 +214,7 @@ namespace SudokuPlayer
                     relatedBlock.Notes.Remove((int)block.Value);
                 }
             }
+            block.Notes = new List<int>();
             EmptyBlocks.Remove(block);
         }
 

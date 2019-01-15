@@ -77,18 +77,18 @@ namespace SudokuPlayer
             }
         }
 
-        private static List<Block> GetRelatedBlocks(Block block) // Note: This will also return the block itself. 
+        private static List<Block> GetRelatedBlocks(Block block)
         {
             List<Block> allRelatedBlocks = new List<Block>();
             for (int c = 0; c < 9; c++)
             {
-                allRelatedBlocks.Add(Map[block.Row, c]); // Get blocks in the same row, including the argument itself. 
+                allRelatedBlocks.Add(Map[block.Row, c]);
             }
             for (int r = 0; r < 9; r++)
             {
-                allRelatedBlocks.Add(Map[r, block.Column]); // Get blocks in the same column, including the argument itself. 
+                allRelatedBlocks.Add(Map[r, block.Column]);
             }
-            allRelatedBlocks.AddRange(GetGroup(block.Row / 3, block.Column / 3));  // Get blocks in the same group, including the argument itself.  
+            allRelatedBlocks.AddRange(GetGroup(block.Row / 3, block.Column / 3));
 
             List<Block> distinctRelatedBlocks = new List<Block>();
             foreach (Block relatedBlock in allRelatedBlocks)

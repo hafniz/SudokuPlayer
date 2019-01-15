@@ -201,15 +201,7 @@ namespace SudokuPlayer
                 string chars = ReadLine();
                 for (int c = 0; c < chars.Length; c++)
                 {
-                    Map[r, c] = new Block();
-                    if (chars[c] == '.')
-                    {
-                        Map[r, c].Value = null;
-                    }
-                    else
-                    {
-                        Map[r, c].Value = int.Parse(chars[c].ToString());
-                    }
+                    Map[r, c] = new Block { Row = r, Column = c, Value = chars[c] == "." ? null : int.Parse(chars[c].ToString()) };
                 }
             }
         }

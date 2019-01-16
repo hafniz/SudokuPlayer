@@ -19,13 +19,14 @@ namespace SudokuPlayer
             }
             do
             {
+                EliminateByEight();
                 EliminateByRow();
                 EliminateByColumn();
                 EliminateByGroup();
                 ShowMap();
             }
             while (EmptyBlocks.Count != 0);
-            ShowMap();
+            ReadLine();
         }
 
         private static void GetMap()
@@ -80,16 +81,9 @@ namespace SudokuPlayer
         private static List<Block> GetRelatedBlocks(Block block)
         {
             List<Block> allRelatedBlocks = new List<Block>();
-            for (int c = 0; c < 9; c++)
-            {
-                allRelatedBlocks.Add(Map[block.Row, c]);
-            }
-            for (int r = 0; r < 9; r++)
-            {
-                allRelatedBlocks.Add(Map[r, block.Column]);
-            }
+            allRelatedBlocks.AddRange(GetRow(block.Row));
+            allRelatedBlocks.AddRange(GetColumn(block.Column));
             allRelatedBlocks.AddRange(GetGroup(block.Row / 3, block.Column / 3));
-
             List<Block> distinctRelatedBlocks = new List<Block>();
             foreach (Block relatedBlock in allRelatedBlocks)
             {
@@ -114,6 +108,26 @@ namespace SudokuPlayer
             return group;
         }
 
+        private static List<Block> GetRow(int r)
+        {
+            List<Block> group = new List<Block>();
+            for (int c = 0; c < 9; c++)
+            {
+                group.Add(Map[r, c]);
+            }
+            return group;
+        }
+
+        private static List<Block> GetColumn(int c)
+        {
+            List<Block> group = new List<Block>();
+            for (int r = 0; r < 9; r++)
+            {
+                group.Add(Map[r, c]);
+            }
+            return group;
+        }
+
         private static bool EliminateByRow()
         {
             bool changed = false;
@@ -132,15 +146,71 @@ namespace SudokuPlayer
                         {
                             if (Map[r, c].Notes.Contains(n)) // See where the note is written in. 
                             {
-                                Map[r, c].Value = n; // Then the value of the block must be the unique note. 
-                                changed = true;
-                                UpdateNotes(Map[r, c]);
+                                changed = Assign(Map[r, c], n); // Then the value of the block must be the unique note. 
                             }
                         }
                     }
                 }
             }
             return changed; // Returns whether a change has been made. 
+        }
+
+        private static bool Assign(Block block, int value)
+        {
+            block.Value = value;
+            UpdateNotes(block);
+            return true; // A change has been made. 
+        }
+
+        private static bool EliminateByEight() // If eight blocks in a row, column or group, then the remaining one is determined. 
+        {
+            bool changed = false;
+            for (int r = 0; r < 9; r++)
+            {
+                List<Block> blocksInRow = GetRow(r);
+                if (blocksInRow.Where(b => b.Value.HasValue).Count() == 8)
+                {
+                    for (int v = 1; v < 10; v++)
+                    {
+                        if (!blocksInRow.Any(b => b.Value == v))
+                        {
+                            changed = Assign(blocksInRow.Single(b => b.Value is null), v);
+                        }
+                    }
+                }
+            }
+            for (int c = 0; c < 9; c++)
+            {
+                List<Block> blocksInColumn = GetColumn(c);
+                if (blocksInColumn.Where(b => b.Value.HasValue).Count() == 8)
+                {
+                    for (int v = 1; v < 10; v++)
+                    {
+                        if (!blocksInColumn.Any(b => b.Value == v))
+                        {
+                            changed = Assign(blocksInColumn.Single(b => b.Value is null), v);
+                        }
+                    }
+                }
+            }
+            for (int rGroup = 0; rGroup < 3; rGroup++)
+            {
+                for (int cGroup = 0; cGroup < 3; cGroup++)
+                {
+                    List<Block> blocksInGroup = GetGroup(rGroup, cGroup);
+                    if (blocksInGroup.Where(b => b.Value.HasValue).Count() == 8)
+                    {
+                        for (int v = 1; v < 10; v++)
+                        {
+                            if (!blocksInGroup.Any(b => b.Value == v))
+                            {
+                                changed = Assign(blocksInGroup.Single(b => b.Value is null), v);
+                            }
+                        }
+                    }
+                }
+            }
+            return changed;
         }
 
         private static bool EliminateByColumn()
@@ -161,9 +231,7 @@ namespace SudokuPlayer
                         {
                             if (Map[r, c].Notes.Contains(n))
                             {
-                                Map[r, c].Value = n;
-                                changed = true;
-                                UpdateNotes(Map[r, c]);
+                                changed = Assign(Map[r, c], n);
                             }
                         }
                     }
@@ -193,9 +261,7 @@ namespace SudokuPlayer
                             {
                                 if (block.Notes.Contains(n))
                                 {
-                                    Map[block.Row, block.Column].Value = n;
-                                    changed = true;
-                                    UpdateNotes(block);
+                                    changed = Assign(Map[block.Row, block.Column], n);
                                 }
                             }
                         }
@@ -237,7 +303,7 @@ namespace SudokuPlayer
                 }
                 WriteLine(line);
             }
-            ReadLine();
+            //ReadLine();
         }
     }
 }

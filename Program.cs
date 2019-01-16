@@ -153,7 +153,24 @@ namespace SudokuPlayer
         {
             block.Value = value;
             UpdateNotes(block);
+            EliminateByOne();
             return true; // A change has been made. 
+        }
+
+        private static bool EliminateByOne() // If a block has only one note, then its value must be that of the note. 
+        {
+            bool changed = false;
+            for (int r = 0; r < 9; r++)
+            {
+                for (int c = 0; c < 9; c++)
+                {
+                    if (Map[r, c].Notes.Count == 1)
+                    {
+                        changed = Assign(Map[r, c], Map[r, c].Notes.Single());
+                    }
+                }
+            }
+            return changed;
         }
 
         private static bool EliminateByEight() // If eight blocks in a row, column or group, then the remaining one is determined. 

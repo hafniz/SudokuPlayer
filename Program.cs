@@ -12,20 +12,15 @@ namespace SudokuPlayer
         private static void Main(string[] args)
         {
             GetMap();
-            EmptyBlocks = GetEmptyBlocks();
+            GetEmptyBlocks();
             foreach (Block emptyBlock in EmptyBlocks)
             {
                 SetNotes(emptyBlock);
             }
-            do
+            while (EliminateByEight() || EliminateByRow() || EliminateByColumn() || EliminateByGroup())
             {
-                EliminateByEight();
-                EliminateByRow();
-                EliminateByColumn();
-                EliminateByGroup();
                 ShowMap();
             }
-            while (EmptyBlocks.Count != 0);
             ReadLine();
         }
 
@@ -50,20 +45,19 @@ namespace SudokuPlayer
             }
         }
 
-        private static List<Block> GetEmptyBlocks()
+        private static void GetEmptyBlocks()
         {
-            List<Block> emptyBlocks = new List<Block>();
+            EmptyBlocks = new List<Block>();
             for (int r = 0; r < 9; r++)
             {
                 for (int c = 0; c < 9; c++)
                 {
                     if (Map[r, c].Value is null)
                     {
-                        emptyBlocks.Add(Map[r, c]);
+                        EmptyBlocks.Add(Map[r, c]);
                     }
                 }
             }
-            return emptyBlocks;
         }
 
         private static void SetNotes(Block emptyBlock)
@@ -303,7 +297,6 @@ namespace SudokuPlayer
                 }
                 WriteLine(line);
             }
-            //ReadLine();
         }
     }
 }

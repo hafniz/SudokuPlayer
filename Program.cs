@@ -26,6 +26,13 @@ namespace SudokuPlayer
 
         private static void GetMap()
         {
+            #region tellSthToUser
+            WriteLine("Enter sodoku puzzle.");
+            WriteLine("replace the empty grid with \".\" (dot), end line with a return.");
+            WriteLine("example:");
+            WriteLine("1.345..89");
+            WriteLine("21.546.78");
+            #endregion
             Map = new Block[9, 9];
             for (int r = 0; r < 9; r++)
             {

@@ -17,7 +17,7 @@ namespace SudokuPlayer
             {
                 SetNotes(emptyBlock);
             }
-            while (EliminateByEight() || EliminateByRow() || EliminateByColumn() || EliminateByGroup())
+            while (EliminateByEight() | EliminateByRow() | EliminateByColumn() | EliminateByGroup())
             {
                 ShowMap();
             }

@@ -7,7 +7,7 @@ namespace SudokuPlayer
     internal static class Program
     {
         private static Block[,] Map { get; set; }
-        public static List<Block> EmptyBlocks { get; set; }
+        private static List<Block> EmptyBlocks { get; set; }
 
         private static void Main(string[] args)
         {
@@ -26,13 +26,15 @@ namespace SudokuPlayer
 
         private static void GetMap()
         {
-            #region tellSthToUser
-            WriteLine("Enter sodoku puzzle.");
-            WriteLine("replace the empty grid with \".\" (dot), end line with a return.");
-            WriteLine("example:");
-            WriteLine("1.345..89");
-            WriteLine("21.546.78");
+            #region prompt for input
+            WriteLine("Enter the sudoku puzzle one row at a time. \r\n" +
+                "Replace the empty grid with '.' (dot), and end the line with a return. \r\n" +
+                "For example: \r\n" +
+                "1.345..89 \r\n" +
+                "21.546.78 \r\n" +
+                "(and so on. ) \r\n");
             #endregion
+
             Map = new Block[9, 9];
             for (int r = 0; r < 9; r++)
             {
@@ -98,35 +100,35 @@ namespace SudokuPlayer
 
         private static List<Block> GetGroup(int rGroup, int cGroup)
         {
-            List<Block> group = new List<Block>();
+            List<Block> blocksInGroup = new List<Block>();
             for (int rOffset = 0; rOffset < 3; rOffset++)
             {
                 for (int cOffset = 0; cOffset < 3; cOffset++)
                 {
-                    group.Add(Map[rGroup * 3 + rOffset, cGroup * 3 + cOffset]);
+                    blocksInGroup.Add(Map[rGroup * 3 + rOffset, cGroup * 3 + cOffset]);
                 }
             }
-            return group;
+            return blocksInGroup;
         }
 
         private static List<Block> GetRow(int r)
         {
-            List<Block> group = new List<Block>();
+            List<Block> blocksInRow = new List<Block>();
             for (int c = 0; c < 9; c++)
             {
-                group.Add(Map[r, c]);
+                blocksInRow.Add(Map[r, c]);
             }
-            return group;
+            return blocksInRow;
         }
 
         private static List<Block> GetColumn(int c)
         {
-            List<Block> group = new List<Block>();
+            List<Block> blocksInColumn = new List<Block>();
             for (int r = 0; r < 9; r++)
             {
-                group.Add(Map[r, c]);
+                blocksInColumn.Add(Map[r, c]);
             }
-            return group;
+            return blocksInColumn;
         }
 
         private static bool EliminateByRow()
